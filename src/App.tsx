@@ -20,8 +20,7 @@ function App() {
       onLoading: false,
       logBDisabled: true,
       logUAlrWr: false,
-      logPAlrWr: false,
-      isclangListVisible: false
+      logPAlrWr: false
     });
     
     useEffect(() => {
@@ -90,6 +89,9 @@ function App() {
     },
     logPassInputSt: {
       border: '1px solid gray'
+    },
+    div1: {
+      animation: 'gradient-animation 10s linear infinite'
     }
     });
   const [langList, setLangList] = useState({
@@ -105,7 +107,9 @@ function App() {
       "errorsMsg": {},
       "errorsMsgT": {
         'logUserIn': "El nombre de usuario debe tener 4 caracteres o más",
-        'logPasswordIn': 'La contraseña debe tener 8 carácteres o más'
+        'logUserIn2': 'El nombre de usuario no puede contener espacios',
+        'logPasswordIn': 'La contraseña debe tener 8 carácteres o más',
+        'logPasswordIn2': 'La contraseña no puede tener espacios'
       },
       "q10": 'Bienvenido! Inicia sesión en tu cuenta',
       "q11": 'Bienvenido de nuevo!',
@@ -121,56 +125,33 @@ function App() {
       "q7": "Log in",
       "q8": "Sign up",
       'errorsMsg': {},
-      "errorsMsgT": { 
+      "errorsMsgT": {
         'logUserIn': 'Username must be 4 characters or more',
-        'logPasswordIn': 'Password must be 8 characters or more'
+        'logUserIn2': 'Username cannot contain spaces',
+        'logPasswordIn': 'Password must be 8 characters or more',
+        'logPasswordIn2': 'Password cannot contain spaces'
       },
+
       "q10": 'Welcome! Log In to your account',
       "q11": 'Welcome again!',
       'q12': 'Save login details'
       }
   });
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const clangListRef = useRef(null);
-  const [isCLLVisible, setCLLV] = useState(false);
-
-  const handleClickOutside = (event) => {
-    if (clangListRef.current && !clangListRef.current.contains(event.target)) {
-    setCLLV(!isCLLVisible);
-    }
-  };
-
-  useEffect(() => {
-    if (isCLLVisible) {
-      document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-}, [isCLLVisible]);
-
-  const handlecLang = function() {
-    setCLLV(!isCLLVisible);
-  };
+  const [usernam, setUsername] = useState('');
+  const [passwor, setPassword] = useState('');
+  const username = usernam.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ0-9]/g, '');
+const password = passwor.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ0-9]/g, '');
+  const [showResponse, setShowResponse] = useState();
   
-const changeM = function(mode, modeB) {
-    const updatedButtonStyles = modeB === 'onLogB' ?
-    { onLogButton: { ...styles.onLogButton, color: 'black' }, onRegButton: { ...styles.onRegButton, color: 'white' } } :
-    { onLogButton: { ...styles.onLogButton, color: 'white' }, onRegButton: { ...styles.onRegButton, color: 'black' } };
-
+const changeM = function(mode) {
     const up = {
-      ...styles,
-      styleFormT: mode,
-      ...updatedButtonStyles
+        ...styles,
+        div1: {...styles.div1, animation: `gradient-animation 10s linear infinite, ${mode} 0.2s ease forwards`}
     };
-    
     if (states.onLoading === false) {
       setStyles(up);
-    }
+    };
   };
   
   const handleUsernameChange = (event) => {
@@ -326,12 +307,6 @@ const changeM = function(mode, modeB) {
       setStyles(updSt);
     }
   };
-
-  const changeLang = function(lang) {
-    localStorage.setItem("lang", lang);
-    setLang(lang);
-    setCLLV(!isCLLVisible);
-  };
   
   const checkAlertMsg = () => {
     if (langList[lang].errorsMsg.m1 !== undefined) {
@@ -357,21 +332,12 @@ const changeM = function(mode, modeB) {
       logBDisabled: true
     };
     setStates(st);
-    
-    /*const upSt = () => {
-      const s = {
-        ...styles,
-        formStyle: {...styles.formStyle, display: 'none'}
-      };
-      setStyles(s);
-    };
-    
-    setTimeout(upSt, 2000);
 
-    /*const url = "https://kiyotakaA.pythonanywhere.com/login";
+    const url = "https://kiyotakaA.pythonanywhere.com/processLog";
     const body = {
       "username": username,
-      "password": password
+      "password": password,
+      'lang': lang
     }
     try {
       fetch(url, {
@@ -383,38 +349,45 @@ const changeM = function(mode, modeB) {
       })
       .then(response => response.json())
       .then(data => {
+        const sty = {
+          ...styles,
+          formV: 'formV'
+        };
+        setStyles(sty);
+    
+        const upSt = () => {
+          const s = {
+            ...styles,
+            formStyle: {...styles.formStyle, display: 'none'}
+          };
+          setStyles(s);
+        };
+        
+        setTimeout(upSt, 2000);
         if (data.code === 1) {
-          alertt.msg = "Inicio de sesion exitoso";
-          alertt.type = "success";
+          console.log(data.msg);
+        } else {
+          console.log(data);
         }
       })
       .catch(error => console.error('Error:', error));
     } catch (error) {
       console.error('Try-catch error:', error);
-    }*/
+    }
   };
   
   return (
   <div>
     <div className="navbar">
       <div className="navTitle">
-        <h1>Proyect</h1> <span className="x x1"></span><span className="x x2"></span>
+        <h1><span className="navL">L</span>uminary</h1>
       </div>
-      <div className="cLang" onClick={handlecLang}><FontAwesomeIcon icon={faLanguage} id='cLangIcon'/></div>
-      {isCLLVisible && (
-        <div ref={clangListRef} className="cLangList">
-        <span className='langES' onClick={() => changeLang("es")}>Español</span>
-        <span className='langEN' onClick={() => changeLang("en")}>English</span>
-      </div>)}
+      <div className="cLang"><FontAwesomeIcon icon={faLanguage} id='cLangIcon'/></div>
       <div className="fas fa-bars">
         <div></div>
         <div></div>
         <div></div>
       </div>
-    </div>
-    <div className="content">
-      <div></div>
-      <div></div>
     </div>
     <div className={`form ${styles.formV}`} style={styles.formStyle}>
       <section className="bg-stars">
@@ -423,9 +396,10 @@ const changeM = function(mode, modeB) {
         <span className="star"></span>
         <span className="star"></span>
       </section>
-      <div className={`fHead ${styles.styleFormT}`}>
-        <button onClick={() => changeM('onLog', 'onLogB')}><span className="text">{langList[lang].q1}</span></button>
-        <button onClick={() => changeM('onReg', 'onRegB')}>{langList[lang].q8}</button>
+      <div className="fHead">
+        <button onClick={() => changeM('slidebgtoleft')}>{langList[lang].q1}</button>
+        <button onClick={() => changeM('slidebgtoright')}>{langList[lang].q8}</button>
+        <div className="div1" style={styles.div1}></div>
       </div>
       <div className="logForm">
         <h1>{states.alrLog ?
@@ -444,7 +418,6 @@ const changeM = function(mode, modeB) {
         </div>
         <div className="remData">
           <input type="checkbox" />
-          <span className="checkmark"></span>
           <span>{langList[lang].q12}</span>
         </div>
         <span className="alertt" style={styles.aleStyle}>

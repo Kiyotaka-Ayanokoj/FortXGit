@@ -6,53 +6,33 @@
 }
 
 body {
-  background: rgb(19, 19, 19);
+  background: black;
   min-height: 100vh;
 }
 
 .navbar {
-  background-color: rgba(26, 26, 26, 0.5);
+  background-color: rgba(0,0,0, 0.2);
   padding: 20px;
   position: sticky;
   top: 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: justify-content;
   align-items: center;
-  box-shadow: 0 2px 5px rgb(2, 183, 255);
   z-index: 2;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
 
 .navTitle {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
+  background: red;
+  display: grid;
+  place-items: center;
 }
 
 .navTitle h1 {
-  font-size: 30px;
+  font-size: 20px;
   color: white;
-}
-
-.x1 {
-  position: relative;
-  left: 16px;
-  background: rgba(2, 225, 255, 1);
-  margin-left: 15px;
-  height: 40px;
-  width: 3px;
-  transform: rotate(45deg);
-  z-index: 2;
-}
-
-.x2 {
-  position: relative;
-  left:10px;
-  background: rgb(136, 136, 136);
-  height: 40px;
-  width: 6px;
-  transform: rotate(135deg);
 }
 
 .fa-bars {
@@ -113,62 +93,8 @@ body {
   border-bottom: 1px solid black;
 }
 
-.content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  height: 300px;
-}
-
-.content div:first-child {
-  position: absolute;
-  width: 10px;
-  height: 260px;
-  background: rgb(136, 136, 136);
-  box-shadow: 0 0 20px rgb(136, 136, 136);
-  border-radius: 20px;
-  animation: he 1s ease-in-out forwards;
-}
-
-@keyframes he {
-  from {
-    transform: rotate(-90deg);
-  }
-  to {
-    transform: rotate(0deg);
-  }
-}
-
-.content div:last-child {
-  position: absolute;
-  width: 5px;
-  height: 260px;
-  background: rgb(2, 225, 255);
-  box-shadow: 0 0 20px rgb(2, 225, 255);
-  border-radius: 20px;
-  animation: bl 1s ease-in-out forwards;
-}
-
-@keyframes bl {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(90deg);
-  }
-}
-
-.content h1 {
-  position: relative;
-  top: 20px;
-  color: white;
-  font-size: 30px;
-}
-
 .form {
   height: 100%;
-  border-radius: 20px 20px 0 0;
   flex-direction: column;
   overflow: hidden;
   position: relative;
@@ -177,9 +103,6 @@ body {
   background: linear-gradient(14deg, rgba(2,0,36, 0.8) 0%, rgba(24, 24, 65, 0.7) 66%, 
             rgb(20, 76, 99) 100%), radial-gradient(circle, rgba(2,0,36, 0.5) 0%, 
             rgba(32, 15, 53, 0.2) 65%, rgba(14, 29, 28, 0.9) 100%);
-  border: 2px solid #fff;
-  -webkit-box-shadow: rgba(0,212,255) 0px 0px 50px -15px;
-  box-shadow: rgba(0,212,255) 0px 0px 50px -15px;
   z-index: +1;
 }
 
@@ -274,8 +197,6 @@ body {
   animation-duration: 1.6s;
 }
 
-
-
 .formV {
   animation: desv 1s linear forwards;
 }
@@ -289,56 +210,73 @@ body {
 .fHead {
   display: flex;
   justify-content: space-around;
+  align-items: center;
   position: relative;
   width: 100%;
-  margin-bottom: 10px;
-  overflow: hidden;
-  border-bottom: 2.5px solid black;
-  
+  padding: 3px;
+  margin-bottom: 15px;
+  background: rgba(0,0,0,0.3);
 }
 
-.fHead::after {
-  content: "";
-  width: 2.5px;
-  height: 60px;
-  background: black;
-  position: absolute;
-  left: 49%;
-  top: -10px;
-  transform: rotate(-40deg);
+.fHead .div1 {
+ position: absolute;
+ transform: translateX(-52%);
+ top: 4.5px;
+ z-index: 2;
+ background-image: linear-gradient(to right, #f00, #f90, #ff0, #0f0, #00f, #90f, #f00);
+ background-size: 200% auto;
+ background-position: 0 50%;
+ filter: blur(5px);
+ width: 45%;
+ padding: 16px;
 }
 
-.onLog {
-  background: repeating-conic-gradient(
-    rgba(0,0,0,0.3) 0deg 140deg,
-    rgba(0,0,0,0) 140deg 320deg
-  );
-  border-radius:0 20px 0 0;
+@keyframes gradient-animation {
+   0% {
+    background-image: linear-gradient(to right, #f00, #f90, #ff0, #0f0, #00f, #90f, #f00);
+    background-size: 200% auto;
+    background-position: 0 50%;
+   }
+   50% {
+    background-image: linear-gradient(to right, #f00, #f90, #ff0, #0f0, #00f, #90f, #f00);
+    background-size: 200% auto;
+    background-position: 100% 50%;
+   }
+   100% {
+    background-image: linear-gradient(to right, #f00, #f90, #ff0, #0f0, #00f, #90f, #f00);
+    background-size: 200% auto;
+    background-position: 200% 50%;
+   }
 }
 
-.onReg {
-  background: repeating-conic-gradient(
-    rgba(0,0,0,0) 0deg 140deg,
-    rgba(0,0,0,0.3) 140deg 320deg
-  );
-  border-radius:20px 0 0 0;
-}
 
 .fHead button {
-  background: none;
-  cursor: pointer;
-  border: none;
-  outline: none;
-  padding: 10px;
-  font-size: 18px;
-  color: white;
-  width: 50%;
+ background: none;
+ border: none;
+ padding: 5px 5px;
+ z-index: 3;
+ color: white;
+}
+
+@keyframes slidebgtoleft {
+ from {
+  transform: translateX(55%);
+ }
+ to {
+  transform: translateX(-52%);
+ }
+}
+
+@keyframes slidebgtoright {
+ to {
+  transform: translateX(55%);
+ }
 }
 
 .logForm {
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 5px
 }
 
 .logForm h1 {
@@ -356,15 +294,17 @@ body {
 }
 
 .logUsername input, .logPassword input {
-  padding: 13px;
+  padding: 0.5rem;
   padding-left: 30px;
-  border-radius: 10px;
+  border-radius: 3px;
   color: white;
   background: transparent;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  caret-color: red;
-  -webkit-caret-color: red;
+  caret-color: lightblue;
+  -webkit-caret-color: lightblue;
+  -moz-caret-color: lightblue;
+  -mz-caret-color: lightblue;
 }
 
 input:focus {
@@ -397,30 +337,13 @@ input:focus {
  display: flex;
  align-items: center;
  margin-bottom: 15px;
- user-select: none;
- -webkit-user-select: none;
- -moz-user-select: none;
- -mz-user-select: none;
 }
 
 .remData input {
- position: absolute;
- opacity: 0;
- cursor: pointer;
- width: 0;
- height: 0;
+ border: 50%;
 }
 
-.checkmark {
- position: absolute;
- top: 0;
- left: 0;
- height: 25px;
- width: 25px;
- background: lightblue;
-}
-
-.remData span:last-child {
+.remData span {
  margin-left: 5px;
  color: gray;
 }
@@ -444,7 +367,7 @@ input:focus {
 }
 
 .logForm label {
-  font-size: 20px;
+  font-size: 17px;
   color: white;
 }
 
@@ -493,4 +416,14 @@ input:focus {
   width: 5px;
   height: 40px;
   margin-right: 10px;
+}
+
+.slide-left {
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(-100%);
+}
+
+.slide-right {
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(0);
 }
