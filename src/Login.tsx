@@ -1,27 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './App.css';
+import './Login.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLanguage, faUser, faLock } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faLock, faCircleExclamation} from '@fortawesome/free-solid-svg-icons';
+import Navbar from './Navbar';
+import { useNavigate } from 'react-router-dom';
 
 
-function App() {
+function Login() {
   const userlan = navigator.language || navigator.userLanguage;
   const userlang = userlan.slice(0, 2);
-  let [lang, setLang] = useState(function() {
-    if (localStorage.getItem("lang") === null) {
-      localStorage.setItem("lang", userlang);
-      return userlang
-    } else {
-      return localStorage.getItem("lang");
-  };
-  });
   
-    const [states, setStates] = useState({
-      onLoading: false,
-      logBDisabled: true,
-      logUAlrWr: false,
-      logPAlrWr: false
-    });
+  const lang = localStorage.getItem('lang') ? localStorage.getItem('lang') : userlang;
+  
+  const [states, setStates] = useState({
+    onLoading: false,
+    logBDisabled: true,
+    logUAlrWr: false,
+    logPAlrWr: false
+  });
     
     useEffect(() => {
       if (localStorage.getItem('alrLog') === null) {
@@ -37,6 +33,7 @@ function App() {
         };
         setStates(u);
       }
+      document.title = 'Login';
       }, []);
 
 
@@ -91,8 +88,9 @@ function App() {
       border: '1px solid gray'
     },
     div1: {
-      animation: 'gradient-animation 10s linear infinite'
-    }
+      animation: ''
+    },
+    alertDis: ''
     });
   const [langList, setLangList] = useState({
     "es": {
@@ -101,19 +99,18 @@ function App() {
       "q3": "Ingrese su nombre de usuario",
       "q4": "Contraseña",
       "q5": "Ingrese su contraseña",
-      "q6": "Recuperar contraseña",
+      "q6": "Olvidaste la contraseña?",
       "q7": "Iniciar sesión",
-      "q8": "Registrarse",
+      "q8": "Crear una cuenta",
       "errorsMsg": {},
       "errorsMsgT": {
-        'logUserIn': "El nombre de usuario debe tener 4 caracteres o más",
-        'logUserIn2': 'El nombre de usuario no puede contener espacios',
-        'logPasswordIn': 'La contraseña debe tener 8 carácteres o más',
-        'logPasswordIn2': 'La contraseña no puede tener espacios'
+        'm1': "El nombre de usuario debe tener 4 caracteres o más",
+        'm2': 'La contraseña debe tener 8 carácteres o más'
       },
-      "q10": 'Bienvenido! Inicia sesión en tu cuenta',
-      "q11": 'Bienvenido de nuevo!',
-      'q12': 'Guardar datos de inicio de sesión'
+      "q10": 'Inicia sesión en Luminary',
+      'q11': 'Guardar datos de inicio de sesión',
+      'q12': 'Cargando...',
+      'q13': 'o'
     },
     "en": {
       "q1": "Log in",
@@ -121,20 +118,19 @@ function App() {
       "q3": "Enter your username",
       "q4": "Password",
       "q5": "Enter your password",
-      "q6": "Recover password",
+      "q6": "Forgot your password?",
       "q7": "Log in",
-      "q8": "Sign up",
+      "q8": "Create an account",
       'errorsMsg': {},
       "errorsMsgT": {
-        'logUserIn': 'Username must be 4 characters or more',
-        'logUserIn2': 'Username cannot contain spaces',
-        'logPasswordIn': 'Password must be 8 characters or more',
-        'logPasswordIn2': 'Password cannot contain spaces'
+        'm1': 'Username must be 4 characters or more',
+        'm2': 'Password must be 8 characters or more'
       },
 
-      "q10": 'Welcome! Log In to your account',
-      "q11": 'Welcome again!',
-      'q12': 'Save login details'
+      "q10": 'Log In to Luminary',
+      'q11': 'Save login details',
+      'q12': 'Loading...',
+      'q13': 'or'
       }
   });
 
@@ -147,7 +143,7 @@ const password = passwor.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ0-9]/g, ''
 const changeM = function(mode) {
     const up = {
         ...styles,
-        div1: {...styles.div1, animation: `gradient-animation 10s linear infinite, ${mode} 0.2s ease forwards`}
+        div1: {...styles.div1, animation: `${mode} 0.2s ease forwards`}
     };
     if (states.onLoading === false) {
       setStyles(up);
@@ -174,7 +170,8 @@ const changeM = function(mode) {
     const updSt = {
       ...styles,
       logUserInputSt: { ...styles.logUserInputSt, border: '1px solid red' },
-      aleStyle: { ...styles.aleStyle, display: 'flex' }
+      alertDis: 'alertDis',
+      aleStyle: {...styles.aleStyle, display: 'flex'}
     };
 
     const updLL = {
@@ -183,7 +180,7 @@ const changeM = function(mode) {
         ...langList[lang],
         errorsMsg: {
           ...langList[lang].errorsMsg,
-          m1: langList[lang].errorsMsgT.logUserIn
+          m1: langList[lang].errorsMsgT.m1
         }
       }
     };
@@ -195,7 +192,7 @@ const changeM = function(mode) {
       ...styles,
       logUserInputSt: { ...styles.logUserInputSt, border: '1px solid gray' },
       logPassInputSt: { ...styles.logPassInputSt, border: '1px solid gray' },
-      aleStyle: { ...styles.aleStyle, display: 'none' }
+      alertDis: 'alertNoDis'
     };
 
     const updLL = {
@@ -203,8 +200,9 @@ const changeM = function(mode) {
       [lang]: {
         ...langList[lang],
         errorsMsg: {
+          ...langList[lang].errorsMsg,
           m1: undefined,
-          m2: ''
+          m2: undefined
         }
       }
     };
@@ -217,6 +215,14 @@ const changeM = function(mode) {
     setLangList(updLL);
     setStyles(updSt);
     setStates(updStates);
+    
+    setTimeout(() => {
+      const updStyles = {
+        ...styles,
+        aleStyle: { ...styles.aleStyle, display: 'none' }
+      };
+      setStyles(updStyles);
+    }, 300);
   } else {
     const updSt = {
       ...styles,
@@ -228,10 +234,27 @@ const changeM = function(mode) {
         [lang]: { ...langList[lang], errorsMsg: {
           ...langList[lang].errorsMsg,
           m1: undefined}}
-      };
+    };
 
     setLangList(updLL);
     setStyles(updSt);
+    
+    if (langList[lang].errorsMsg.m2 === undefined) {
+      const updStyles = {
+        ...updSt,
+        alertDis: 'alertNoDis'
+      };
+    
+      setStyles(updStyles);
+      
+      setTimeout(() => {
+        const updStyles = {
+          ...updSt,
+          aleStyle: { ...updSt.aleStyle, display: 'none' }
+        };
+        setStyles(updStyles);
+      }, 300);
+    }
   }
 };
 
@@ -245,6 +268,11 @@ const changeM = function(mode) {
     };
     setStates(updStates);
     
+    const updLL = {
+      ...langList, 
+      
+    }
+    
     if (passVal.length < 8) {
       const updStates = {
         ...states, 
@@ -255,6 +283,7 @@ const changeM = function(mode) {
       const updSt = {
         ...styles,
         logPassInputSt: {...styles.logPassInputSt, border: '1px solid red'},
+        alertDis: 'alertDis',
         aleStyle: {...styles.aleStyle, display: 'flex'}
       };
       
@@ -262,24 +291,25 @@ const changeM = function(mode) {
         ...langList,
         [lang]: { ...langList[lang], errorsMsg: {
           ...langList[lang].errorsMsg,
-          m2: langList[lang].errorsMsgT.logPasswordIn}}
+          m2: langList[lang].errorsMsgT.m2}}
       };
 
-    setLangList(updLL);
+      setLangList(updLL);
       setStyles(updSt);
     } else if (passVal.length > 7 && username.length > 3) {
       const updSt = {
         ...styles,
         logUserInputSt: {...styles.logUserInputSt, border: '1px solid gray'},
         logPassInputSt: {...styles.logPassInputSt, border: '1px solid gray'},
-        aleStyle: {...styles.aleStyle, display: 'none'}
+        alertDis: 'alertNoDis'
       };
       
       const updLL = {
         ...langList,
         [lang]: { ...langList[lang], errorsMsg: {
+          ...langList[lang].errorsMsg,
           m1: undefined,
-          m2: ''}}
+          m2: undefined}}
       };
       
       const updStates = {
@@ -290,6 +320,14 @@ const changeM = function(mode) {
       setLangList(updLL);
       setStyles(updSt);
       setStates(updStates);
+      
+      setTimeout(() => {
+      const updStyles = {
+        ...styles,
+        aleStyle: { ...styles.aleStyle, display: 'none' }
+      };
+      setStyles(updStyles);
+    }, 300);
     } else {
       const updSt = {
         ...styles,
@@ -300,31 +338,89 @@ const changeM = function(mode) {
         ...langList,
         [lang]: { ...langList[lang], errorsMsg: {
           ...langList[lang].errorsMsg,
-          m2: ''}}
+          m2: undefined}}
       };
 
       setLangList(updLL);
       setStyles(updSt);
+      
+      if (langList[lang].errorsMsg.m1 === undefined) {
+        const updSt = {
+          ...styles,
+          alertDis: 'alertNoDis'
+        };
+    
+        setStyles(updSt);
+      
+        setTimeout(() => {
+          const updSyles = {
+            ...updSt,
+            aleStyle: { ...updSt.aleStyle, display: 'none' }
+          };
+          setStyles(updStyles);
+        }, 300);
+      }
     }
   };
   
   const checkAlertMsg = () => {
-    if (langList[lang].errorsMsg.m1 !== undefined) {
-      return langList[lang].errorsMsg.m1;
-    } else {
-      return langList[lang].errorsMsg.m2;
+    for (let i = 1; i <= 10; i++) {
+      if (langList[lang].errorsMsg[`m${i}`] !== undefined) {
+        return langList[lang].errorsMsg[`m${i}`];
+      }
     }
+    return '';
   };
+  
+  useEffect(() => {
+    /*localStorage.setItem("lang", lang);*/
+    const notLang = lang === 'es' ? 'en': 'es';
+    let updatedLangList = { ...langList };
+
+    for (let i = 1; i <= 10; i++) {
+    const errorMsg = langList[notLang].errorsMsg[`m${i}`];
+    const updErrorMsg = langList[lang].errorsMsgT[`m${i}`];
+    if (errorMsg !== undefined && errorMsg !== '') {
+      updatedLangList = {
+        ...updatedLangList,
+        [lang]: {
+          ...updatedLangList[lang],
+          errorsMsg: {
+            ...updatedLangList[lang].errorsMsg,
+            [`m${i}`]: updErrorMsg
+          }
+        },
+        [notLang]: {
+          ...updatedLangList[notLang],
+          errorsMsg: {
+            ...updatedLangList[notLang].errorsMsg,
+            [`m${i}`]: ''
+          }
+        }
+      };
+    }
+  }
+
+  setLangList(updatedLangList);
+  console.log(localStorage.getItem('lang'));
+  }, [lang]);
+
+  const navigate = useNavigate();
 
   const sendForm = () => {
+    const genUserToken = () => {
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let result = '';
+
+      for (let i = 0; i < 64; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        result += characters.charAt(randomIndex);
+      }
+
+      return result;
+    }
     
-    const upS = {
-      ...styles,
-      loadingIcon: 'logLoading',
-    loadingStyle: {...styles.loadingStyle, display: 'flex'},
-    bSpanStyle: {...styles.bSpanStyle, display: 'none'}
-    };
-    setStyles(upS);
+    const userToken = genUserToken();
     
     const st = {
       ...states,
@@ -332,14 +428,44 @@ const changeM = function(mode) {
       logBDisabled: true
     };
     setStates(st);
+    
+    const removeM3 = (msg) => {
+      let secs = 5;
+      const interval = setInterval(() => {
+        if (secs > -1) {
+          const updLL = {
+            ...langList,
+            [lang]: { ...langList[lang], errorsMsg: { ...langList[lang].errorsMsg, m3: `${msg} (${secs})`    }},
+       };
+          setLangList(updLL);
+          secs--;
+        } else {
+          clearInterval(interval);
+          const updLL = {
+            ...langList,
+            [lang]: {
+              ...langList[lang],
+              errorsMsg: {
+                ...langList[lang].errorsMsg,
+                m3: '',
+              },
+            },
+          };
+          setLangList(updLL);
+        }
+      }, 1000);
+    };
 
-    const url = "https://kiyotakaA.pythonanywhere.com/processLog";
+
+    const url = "https://kiyotakaA.pythonanywhere.com/api/processLog";
     const body = {
       "username": username,
       "password": password,
-      'lang': lang
+      'lang': lang,
+      'userToken': userToken
     }
     try {
+      let updStates;
       fetch(url, {
         method: 'POST',
         headers: {
@@ -349,89 +475,83 @@ const changeM = function(mode) {
       })
       .then(response => response.json())
       .then(data => {
-        const sty = {
-          ...styles,
-          formV: 'formV'
-        };
-        setStyles(sty);
-    
-        const upSt = () => {
-          const s = {
-            ...styles,
-            formStyle: {...styles.formStyle, display: 'none'}
-          };
-          setStyles(s);
-        };
-        
-        setTimeout(upSt, 2000);
         if (data.code === 1) {
-          console.log(data.msg);
+          updStates = {
+            ...st,
+            onLoading: false
+          };
+          localStorage.setItem('userToken', userToken);
+          navigate('/');
+        } else if (data.code === 2) {
+          updStates = {
+            ...st,
+            onLoading: false,
+            logBDisabled: false
+          };
+          removeM3(data.msg);
         } else {
-          console.log(data);
+          updStates = {
+            ...st,
+            onLoading: false,
+            logBDisabled: false
+          };
+          removeM3(data.msg);
         }
+        
+        setStates(updStates);
       })
       .catch(error => console.error('Error:', error));
     } catch (error) {
       console.error('Try-catch error:', error);
     }
   };
+
   
   return (
-  <div>
-    <div className="navbar">
-      <div className="navTitle">
-        <h1><span className="navL">L</span>uminary</h1>
-      </div>
-      <div className="cLang"><FontAwesomeIcon icon={faLanguage} id='cLangIcon'/></div>
-      <div className="fas fa-bars">
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-    </div>
+  <>
+    <Navbar onLoading={states.onLoading}/>
     <div className={`form ${styles.formV}`} style={styles.formStyle}>
-      <section className="bg-stars">
-        <span className="star"></span>
-        <span className="star"></span>
-        <span className="star"></span>
-        <span className="star"></span>
-      </section>
-      <div className="fHead">
-        <button onClick={() => changeM('slidebgtoleft')}>{langList[lang].q1}</button>
-        <button onClick={() => changeM('slidebgtoright')}>{langList[lang].q8}</button>
-        <div className="div1" style={styles.div1}></div>
-      </div>
       <div className="logForm">
-        <h1>{states.alrLog ?
-          (langList[lang].q11)
-          : (langList[lang].q10)}
-        </h1>
+        <h1>{langList[lang].q10}</h1>
         <div className="logUsername">
-          <label>{langList[lang].q2}</label>
-          <input type="text" id="tr_uinput" onChange={handleUsernameChange} placeholder={langList[lang].q3} value={username} style={styles.logUserInputSt}/>
+          <input type="text" id="tr_uinput" onChange={handleUsernameChange} value={username} style={styles.logUserInputSt} placeholder={langList[lang].q3}/>
           <FontAwesomeIcon icon={faUser} className="faUser"/>
         </div>
         <div className="logPassword">
-          <label>{langList[lang].q4}</label>
           <input type="password" id="tr_pinput" onChange={handlePasswordChange} placeholder={langList[lang].q5} value={password} style={styles.logPassInputSt}/>
           <FontAwesomeIcon icon={faLock} className="faLock"/>
         </div>
         <div className="remData">
-          <input type="checkbox" />
-          <span>{langList[lang].q12}</span>
+  <input type="checkbox" id="cbx2" style={{ display: 'none' }} />
+  <label htmlFor="cbx2" className="check"> 
+    <svg width="18px" height="18px" viewBox="0 0 18 18">
+      <path d="M 1 9 L 1 9 c 0 -5 3 -8 8 -8 L 9 1 C 14 1 17 5 17 9 L 17 9 c 0 4 -4 8 -8 8 L 9 17 C 5 17 1 14 1 9 L 1 9 Z"></path>
+      <polyline points="1 9 7 14 15 4"></polyline>
+    </svg>
+  </label>
+  <span>{langList[lang].q11}</span>
+</div>
+        <div className={`alert p3 ${styles.alertDis}`} role="alert" style={styles.aleStyle}>
+        <FontAwesomeIcon icon={faCircleExclamation} id="alertFa"></FontAwesomeIcon>
+        <span>{checkAlertMsg()}</span>
         </div>
-        <span className="alertt" style={styles.aleStyle}>
-          <div className={`alicon ${styles.alertt.type}`} style={styles.alStyle}></div> {checkAlertMsg()}
-        </span>
+
         <button disabled={states.logBDisabled ? true : false} id='log_send_form' onClick={sendForm}>
-          <span style={styles.bSpanStyle}>{langList[lang].q7}</span> 
-          <div className={styles.loadingIcon} style={styles.loadingStyle}></div>
+          {states.onLoading ? (<span><span className="spinner-grow spinner-grow-sm mx-2"></span>{langList[lang].q12}</span>) : (<span style={styles.bSpanStyle}>{langList[lang].q7}</span>)}
         </button>
-        <button id='forgot_pass'>{langList[lang].q6}</button>
+        <div className="fpcontainer">
+          <a href="/forgot" id='forgot_pass'>{langList[lang].q6}</a>
+        </div>
+        <div class="d-flex align-items-center mb-4">
+  <hr class="flex-grow-1 border-top border-gray" />
+  <span class="px-2 text-gray">{langList[lang].q13}</span>
+  <hr class="flex-grow-1 border-top border-gray" />
+</div>
+        <button className="sign-up">{langList[lang].q8}</button>
       </div>
     </div>
-  </div>
+  </>
 );
 }
 
-export default App;
+export default Login;

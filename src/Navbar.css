@@ -1,0 +1,160 @@
+.navbar {
+  background-color: rgba(0,0,0, 0.2);
+  padding: 20px;
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  z-index: 2;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 0.5px solid darkgray;
+}
+
+.navTitle {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.reactImg {
+  width: 45px;
+  height: 40px;
+}
+
+.navTitle span {
+  margin-left: 10px;
+  font-size: 30px;
+  color: white;
+}
+
+.navMenu {
+  cursor: pointer;
+}
+
+.navIcon {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 10px;
+  border-radius: 50%;
+  border: none;
+  background: none;
+}
+
+.navIcon div:nth-child(1) {
+  width: 20px;
+  height: 1px;
+  background: white;
+}
+
+.navIcon div:nth-child(2) {
+  width: 20px;
+  height: 1px;
+  background: white;;
+}
+
+.navList {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  right: 0;
+  top: 80px;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.navList button {
+  border-radius: 0px;
+  padding: 15px;
+  font-size: 15px;
+  text-align: left;
+  color: white;
+  background: none;
+  border: none;
+  position: relative;
+}
+
+.language::before {
+  content: "\276F";
+  color: white;
+  font-size: 18px;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.navList {
+  transform: scale(0);
+}
+
+.navListOpen {
+  animation: navListOpen 0.3s ease forwards;
+}
+
+.navListClosed {
+  animation: navListClosed 0.3s ease forwards;
+}
+
+@keyframes navListOpen {
+  from {
+    transform: scaleX(0);
+    transform-origin: right;
+  }
+  to {
+    transform: scaleX(1);
+    transform-origin: right;
+  }
+}
+
+@keyframes navListClosed {
+  from {
+    transform: scaleX(1);
+    transform-origin: right;
+  }
+  to {
+    transform: scaleX(0);
+    transform-origin: right;
+  }
+}
+
+.langMenu {
+  display: flex;
+  flex-direction: column;
+  transform: scale(0);
+}
+
+.langMenuOpen {
+  animation: langMenuOpen 0.3s ease forwards;
+}
+
+.langMenuClosed {
+  animation: langMenuClosed 0.3s ease forwards;
+}
+
+@keyframes langMenuOpen {
+  from {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  to {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+}
+
+@keyframes langMenuClosed {
+  from {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  to {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+}
