@@ -59,11 +59,6 @@ function Home() {
     <>
       <Navbar lang="es" changeLang={changeLang}/>
       <h1>Hello</h1>
-      <div className="form-floating mb-3 mt-3">
-  <input type="text" className="form-control" id="email" placeholder="Enter email" name="email" />
-  <label htmlFor="email">Email</label>
-</div>
-
     </>
   )
 }

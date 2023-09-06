@@ -1,89 +1,110 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { changeLang } from './actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLanguage, faUser, faLock } from '@fortawesome/free-solid-svg-icons';
+import { faLanguage } from '@fortawesome/free-solid-svg-icons';
 import './Navbar.css';
-import App from './App';
+import { Link } from 'react-router-dom';
 
-const Navbar = ({ onLoading }) => {
-  const lang = localStorage.getItem('lang') ? localStorage.getItem('lang') : userlang;
-  
-  const [states, setStates] = useState({});
-  const [langList, setLangList] = useState({
+const Navbar = (props) => {
+  const { lang, changeLang } = props;
+
+  const [states, setStates] = useState({
+    navListState: '',
+    langMenuState: 'langMenuClosed',
+    navState: true
+  });
+
+  const langList = {
     es: {
-      navLang: 'Idioma'
+      navList: {
+        home: 'Inicio',
+        login: 'Iniciar sesión',
+        signup: 'Crear una cuenta',
+        navLang: 'Idioma',
+        logout: 'Cerrar sesión'
+      }
     },
     en: {
-      navLang: 'Language'
+      navList: {
+        home: 'Home',
+        login: 'Log In',
+        signup: 'Create an account',
+        navLang: 'Language',
+        logout: 'Log out'
+      }
+    },
+  };
+
+  useEffect(() => {
+    const storedLang = localStorage.getItem('lang');
+    if (storedLang) {
+      changeLang(storedLang);
     }
-  });
-  
+  }, [changeLang]);
+
   const openNavList = () => {
     if (states.navListState === 'navListOpen') {
-      const updateStates = {
-        ...states, 
-        navListState: 'navListClosed'
-      }
-      setStates(updateStates);
+      setStates({ ...states, navListState: 'navListClosed' });
     } else {
-      const updateStates = {
-        ...states, 
-        navListState: 'navListOpen'
-      }
-      setStates(updateStates);
+      setStates({ ...states, navListState: 'navListOpen' });
     }
+    
+    setStates((prevStates) => ({
+      ...prevStates,
+      navState: !prevStates.navState
+    }));
   };
-  
+
   const openLangMenu = () => {
     if (states.langMenuState === 'langMenuOpen') {
-      const updateStates = {
-        ...states, 
-        langMenuState: 'langMenuClosed'
-      }
-      setStates(updateStates);
+      setStates({ ...states, langMenuState: 'langMenuClosed' });
     } else {
-      const updateStates = {
-        ...states, 
-        langMenuState: 'langMenuOpen'
-      }
-      setStates(updateStates);
+      setStates({ ...states, langMenuState: 'langMenuOpen' });
     }
   };
-  
-  const changeLang = (lang) => {
-    localStorage.setItem('lang', lang);
+
+  const handleChangeLang = (newLang) => {
+    changeLang(newLang);
+    localStorage.setItem('lang', newLang);
   };
-  
+
   return (
     <div className="navbar">
       <div className="navTitle">
-        <img src="https://cdn.freebiesupply.com/logos/large/2x/react-native-firebase-1-logo-black-and-white.png" className="reactImg" />
+        <img src="https://seeklogo.com/images/R/risingwave-icon-logo-837E37238C-seeklogo.com.png" className="reactImg" />
         <span>Luminary</span>
       </div>
-      <div className="dropdown">
-        {/*<button className="btn dropdown-toggle" type="button" id="cLangDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-          <FontAwesomeIcon icon={faLanguage} id='cLangIcon'/>
-        </button>
-        {onLoading !== true ? (
-        <ul className="dropdown-menu" aria-labelledby="cLangDropdown">
-          <span className='dropdown-item' onClick={() => changeLang("es")}>Español</span>
-        <span className='dropdown-item' onClick={() => changeLang("en")}>English</span>
-        </ul>) : ''}*/}
-      </div>
       <div className="navMenu">
-        <button className="navIcon" onClick={openNavList}>
+        <button className={`navIcon ${states.navState ? '' : 'navClosed'}`} onClick={openNavList}>
           <div></div>
           <div></div>
         </button>
-        <div className={`navList ${states.navListState}`}>
-          <button type="button" className="language" onClick={openLangMenu}>{langList[lang].navLang}</button>
-          <div className={`langMenu ${states.langMenuState}`}>
-            <button onClick={() => changeLang("es")}>Español</button>
-        <button onClick={() => changeLang("en")}>English</button>
+      </div>
+        <div className={`navList ${states.navListState}`}>￼
+        <div className="navListContent">
+          <Link to="/" className="Link btn">{langList[lang].navList.home}</Link>
+          <div className="lastButtons">
+            <Link to="/login" className="Link btn navLoginButton">{langList[lang].navList.login}</Link>
+            <Link to="/signup" className="Link btn navSignupButton">{langList[lang].navList.signup}</Link>
           </div>
+          {/*<div className="changeLang">
+            <button type="button" className="language btn" onClick={openLangMenu}>
+            {langList[lang].navList.navLang}
+            </button>
+            <div className={`langMenu ${states.langMenuState}`}>
+            <button onClick={() => handleChangeLang("es")}>Español</button>
+            <button onClick={() => handleChangeLang("en")}>English</button>￼
+          </div>
+          </div>*/}
         </div>
       </div>
-  </div>
+    </div>
   );
-}
+};
 
-export default Navbar;
+const mapStateToProps = (state) => ({
+  lang: state.lang,
+});
+
+export default connect(mapStateToProps, { changeLang })(Navbar);

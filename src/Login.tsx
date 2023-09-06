@@ -4,13 +4,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock, faCircleExclamation} from '@fortawesome/free-solid-svg-icons';
 import Navbar from './Navbar';
 import { useNavigate } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { changeLang } from './actions';
 
 
-function Login() {
-  const userlan = navigator.language || navigator.userLanguage;
-  const userlang = userlan.slice(0, 2);
-  
-  const lang = localStorage.getItem('lang') ? localStorage.getItem('lang') : userlang;
+const Login = (props) => {
+  /*const userlan = navigator.language || navigator.userLanguage;
+  const userlang = userlan.slice(0, 2);*/
+  const { lang, changeLang } = props;
   
   const [states, setStates] = useState({
     onLoading: false,
@@ -402,7 +403,6 @@ const changeM = function(mode) {
   }
 
   setLangList(updatedLangList);
-  console.log(localStorage.getItem('lang'));
   }, [lang]);
 
   const navigate = useNavigate();
@@ -552,6 +552,10 @@ const changeM = function(mode) {
     </div>
   </>
 );
-}
+};
 
-export default Login;
+const mapStateToProps = (state) => ({
+  lang: state.lang,
+});
+
+export default connect(mapStateToProps, { changeLang })(Login);
