@@ -7,7 +7,7 @@ import './Navbar.css';
 import { Link } from 'react-router-dom';
 
 const Navbar = (props) => {
-  const { lang, changeLang } = props;
+  const { lang, changeLang, projectName } = props;
 
   const [states, setStates] = useState({
     navListState: '',
@@ -22,7 +22,9 @@ const Navbar = (props) => {
         login: 'Iniciar sesión',
         signup: 'Crear una cuenta',
         navLang: 'Idioma',
-        logout: 'Cerrar sesión'
+        logout: 'Cerrar sesión',
+        about: `Acerca de ${projectName}`,
+        contact: 'Contáctanos'
       }
     },
     en: {
@@ -31,7 +33,9 @@ const Navbar = (props) => {
         login: 'Log In',
         signup: 'Create an account',
         navLang: 'Language',
-        logout: 'Log out'
+        logout: 'Log out',
+        about: `About ${projectName}`,
+        contact: 'Contact me'
       }
     },
   };
@@ -72,8 +76,8 @@ const Navbar = (props) => {
   return (
     <div className="navbar">
       <div className="navTitle">
-        <img src="https://seeklogo.com/images/R/risingwave-icon-logo-837E37238C-seeklogo.com.png" className="reactImg" />
-        <span>Luminary</span>
+        <img src="https://cdn-icons-png.flaticon.com/512/1553/1553399.png" className="navImg" />
+        <span>{projectName}</span>
       </div>
       <div className="navMenu">
         <button className={`navIcon ${states.navState ? '' : 'navClosed'}`} onClick={openNavList}>
@@ -82,22 +86,20 @@ const Navbar = (props) => {
         </button>
       </div>
         <div className={`navList ${states.navListState}`}>￼
-        <div className="navListContent">
           <Link to="/" className="Link btn">{langList[lang].navList.home}</Link>
-          <div className="lastButtons">
-            <Link to="/login" className="Link btn navLoginButton">{langList[lang].navList.login}</Link>
-            <Link to="/signup" className="Link btn navSignupButton">{langList[lang].navList.signup}</Link>
-          </div>
+          <Link to="/aboutme" className="Link btn">{langList[lang].navList.about}</Link>
+          <Link to="/contact" className="Link btn">{langList[lang].navList.contact}</Link>
+          <Link to="/login" className="Link btn lb lb1">{langList[lang].navList.login}</Link>
+          <Link to="/signup" className="Link btn lb lb2">{langList[lang].navList.signup}</Link>
           {/*<div className="changeLang">
             <button type="button" className="language btn" onClick={openLangMenu}>
             {langList[lang].navList.navLang}
             </button>
             <div className={`langMenu ${states.langMenuState}`}>
             <button onClick={() => handleChangeLang("es")}>Español</button>
-            <button onClick={() => handleChangeLang("en")}>English</button>￼
+            <button onClick={() => handleChangeLang("en")}>English</button>
           </div>
           </div>*/}
-        </div>
       </div>
     </div>
   );
@@ -105,6 +107,7 @@ const Navbar = (props) => {
 
 const mapStateToProps = (state) => ({
   lang: state.lang,
+  projectName: state.projectName,
 });
 
 export default connect(mapStateToProps, { changeLang })(Navbar);

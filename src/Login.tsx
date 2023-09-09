@@ -3,7 +3,7 @@ import './Login.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock, faCircleExclamation} from '@fortawesome/free-solid-svg-icons';
 import Navbar from './Navbar';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { changeLang } from './actions';
 
@@ -11,7 +11,7 @@ import { changeLang } from './actions';
 const Login = (props) => {
   /*const userlan = navigator.language || navigator.userLanguage;
   const userlang = userlan.slice(0, 2);*/
-  const { lang, changeLang } = props;
+  const { lang, changeLang, projectName } = props;
   
   const [states, setStates] = useState({
     onLoading: false,
@@ -108,7 +108,7 @@ const Login = (props) => {
         'm1': "El nombre de usuario debe tener 4 caracteres o más",
         'm2': 'La contraseña debe tener 8 carácteres o más'
       },
-      "q10": 'Inicia sesión en Luminary',
+      "q10": `Inicia sesión en ${projectName}`,
       'q11': 'Guardar datos de inicio de sesión',
       'q12': 'Cargando...',
       'q13': 'o'
@@ -128,7 +128,7 @@ const Login = (props) => {
         'm2': 'Password must be 8 characters or more'
       },
 
-      "q10": 'Log In to Luminary',
+      "q10": `Log In to ${projectName}`,
       'q11': 'Save login details',
       'q12': 'Loading...',
       'q13': 'or'
@@ -299,30 +299,34 @@ const changeM = function(mode) {
       setStyles(updSt);
     } else if (passVal.length > 7 && username.length > 3) {
       const updSt = {
-        ...styles,
-        logUserInputSt: {...styles.logUserInputSt, border: '1px solid gray'},
-        logPassInputSt: {...styles.logPassInputSt, border: '1px solid gray'},
-        alertDis: 'alertNoDis'
-      };
-      
-      const updLL = {
-        ...langList,
-        [lang]: { ...langList[lang], errorsMsg: {
+      ...styles,
+      logUserInputSt: { ...styles.logUserInputSt, border: '1px solid gray' },
+      logPassInputSt: { ...styles.logPassInputSt, border: '1px solid gray' },
+      alertDis: 'alertNoDis'
+    };
+
+    const updLL = {
+      ...langList,
+      [lang]: {
+        ...langList[lang],
+        errorsMsg: {
           ...langList[lang].errorsMsg,
           m1: undefined,
-          m2: undefined}}
-      };
-      
-      const updStates = {
-        ...states, 
-        logBDisabled: false
-      };
+          m2: undefined
+        }
+      }
+    };
 
-      setLangList(updLL);
-      setStyles(updSt);
-      setStates(updStates);
-      
-      setTimeout(() => {
+    const updStates = {
+      ...states,
+      logBDisabled: false
+    };
+
+    setLangList(updLL);
+    setStyles(updSt);
+    setStates(updStates);
+    
+    setTimeout(() => {
       const updStyles = {
         ...styles,
         aleStyle: { ...styles.aleStyle, display: 'none' }
@@ -332,7 +336,8 @@ const changeM = function(mode) {
     } else {
       const updSt = {
         ...styles,
-        logPassInputSt: {...styles.logPassInputSt, border: '1px solid gray'}
+        logPassInputSt: {...styles.logPassInputSt, border: '1px solid gray'},
+        alertDis: 'alertNoDis'
       };
       
       const updLL = {
@@ -354,12 +359,12 @@ const changeM = function(mode) {
         setStyles(updSt);
       
         setTimeout(() => {
-          const updSyles = {
-            ...updSt,
-            aleStyle: { ...updSt.aleStyle, display: 'none' }
+          const updStyles = {
+            ...styles,
+            aleStyle: { ...styles.aleStyle, display: 'none' }
           };
           setStyles(updStyles);
-        }, 300);
+        y}, 300);
       }
     }
   };
@@ -429,33 +434,26 @@ const changeM = function(mode) {
     };
     setStates(st);
     
-    const removeM3 = (msg) => {
-      let secs = 5;
-      const interval = setInterval(() => {
-        if (secs > -1) {
-          const updLL = {
-            ...langList,
-            [lang]: { ...langList[lang], errorsMsg: { ...langList[lang].errorsMsg, m3: `${msg} (${secs})`    }},
-       };
-          setLangList(updLL);
-          secs--;
-        } else {
-          clearInterval(interval);
-          const updLL = {
-            ...langList,
-            [lang]: {
-              ...langList[lang],
-              errorsMsg: {
-                ...langList[lang].errorsMsg,
-                m3: '',
-              },
-            },
-          };
-          setLangList(updLL);
-        }
-      }, 1000);
-    };
-
+    const handleResponse = (data) => {
+      setStates(prevStates => ({
+        ...prevStates,
+        onLoading: false,
+        logBDisabled: false
+      }));
+      
+      /*if (data.code === 1) {
+        localStorage.setItem('userToken', userToken);
+        navigate('/');
+      } else {
+        setLangList(prevStates => ({
+          ...prevStates, 
+          [lang]: {...prevStates[lang], errorsMsg: {
+            ...prevStates[lang].errorsMsg,
+            m3: data.msg
+          }}
+        }));
+      }*/
+    }
 
     const url = "https://kiyotakaA.pythonanywhere.com/api/processLog";
     const body = {
@@ -475,37 +473,13 @@ const changeM = function(mode) {
       })
       .then(response => response.json())
       .then(data => {
-        if (data.code === 1) {
-          updStates = {
-            ...st,
-            onLoading: false
-          };
-          localStorage.setItem('userToken', userToken);
-          navigate('/');
-        } else if (data.code === 2) {
-          updStates = {
-            ...st,
-            onLoading: false,
-            logBDisabled: false
-          };
-          removeM3(data.msg);
-        } else {
-          updStates = {
-            ...st,
-            onLoading: false,
-            logBDisabled: false
-          };
-          removeM3(data.msg);
-        }
-        
-        setStates(updStates);
+        handleResponse(data);
       })
       .catch(error => console.error('Error:', error));
     } catch (error) {
       console.error('Try-catch error:', error);
     }
   };
-
   
   return (
   <>
@@ -540,14 +514,14 @@ const changeM = function(mode) {
           {states.onLoading ? (<span><span className="spinner-grow spinner-grow-sm mx-2"></span>{langList[lang].q12}</span>) : (<span style={styles.bSpanStyle}>{langList[lang].q7}</span>)}
         </button>
         <div className="fpcontainer">
-          <a href="/forgot" id='forgot_pass'>{langList[lang].q6}</a>
+          <Link to="/forgot" id='forgot_pass'>{langList[lang].q6}</Link>
         </div>
         <div class="d-flex align-items-center mb-4">
   <hr class="flex-grow-1 border-top border-gray" />
   <span class="px-2 text-gray">{langList[lang].q13}</span>
   <hr class="flex-grow-1 border-top border-gray" />
 </div>
-        <button className="sign-up">{langList[lang].q8}</button>
+        <Link to="/signup" className="sign-up">{langList[lang].q8}</Link>
       </div>
     </div>
   </>
@@ -556,6 +530,7 @@ const changeM = function(mode) {
 
 const mapStateToProps = (state) => ({
   lang: state.lang,
+  projectName: state.projectName,
 });
 
 export default connect(mapStateToProps, { changeLang })(Login);

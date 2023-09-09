@@ -1,6 +1,7 @@
 // reducers.js
 const initialState = {
   lang: localStorage.getItem('lang') || userlang,
+  projectName: 'FortX',
 };
 
 const rootReducer = (state = initialState, action) => {

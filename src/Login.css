@@ -6,7 +6,7 @@
 }
 
 body {
-  background: black;
+  background: wheat;
   min-height: 100vh;
   overflow-x: hidden;
   overflow-y: scroll;
@@ -251,6 +251,7 @@ input::placeholder {
   margin-bottom: 20px;
   cursor: pointer;
   display: flex;
+  text-decoration: none;
   justify-content: center;
   align-items: center;
 }
