@@ -72,10 +72,6 @@ const Login = (props) => {
       bSpanStyle: {
         display: 'flex'
       },
-      alertt: {
-        'type': '',
-        msg: 'El nombre de usuario debe'
-      },
       alStyle: {},
       aleStyle: {
         display: "none"
@@ -141,104 +137,82 @@ const Login = (props) => {
 const password = passwor.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ0-9]/g, '');
   const [showResponse, setShowResponse] = useState();
   
-const changeM = function(mode) {
-    const up = {
-        ...styles,
-        div1: {...styles.div1, animation: `${mode} 0.2s ease forwards`}
-    };
-    if (states.onLoading === false) {
-      setStyles(up);
-    };
-  };
-  
   const handleUsernameChange = (event) => {
   const userVal = event.target.value;
-  const updStates = {
-    ...states,
+  setStates(prevStates => ({
+    ...prevStates,
     logUAlrWr: true
-  };
-  setStates(updStates);
+  }));
 
   setUsername(event.target.value);
 
   if (userVal.length < 4) {
-    const updStates = {
-      ...states,
+    setStates(prevStates => ({
+      ...prevStates,
       logBDisabled: true
-    };
-    setStates(updStates);
+    }));
 
-    const updSt = {
-      ...styles,
-      logUserInputSt: { ...styles.logUserInputSt, border: '1px solid red' },
+    setStyles(prevStyles => ({
+      ...prevStyles,
+      logUserInputSt: { ...prevStyles.logUserInputSt, border: '1px solid red' },
       alertDis: 'alertDis',
-      aleStyle: {...styles.aleStyle, display: 'flex'}
-    };
+      aleStyle: {...prevStyles.aleStyle, display: 'flex'}
+    }));
 
-    const updLL = {
-      ...langList,
+    setLangList(prevData => ({
+      ...prevData,
       [lang]: {
-        ...langList[lang],
+        ...prevData[lang],
         errorsMsg: {
-          ...langList[lang].errorsMsg,
-          m1: langList[lang].errorsMsgT.m1
+          ...prevData[lang].errorsMsg,
+          m1: prevData[lang].errorsMsgT.m1
         }
       }
-    };
+    }));
 
-    setLangList(updLL);
-    setStyles(updSt);
   } else if (userVal.length > 3 && password.length > 7) {
-    const updSt = {
-      ...styles,
-      logUserInputSt: { ...styles.logUserInputSt, border: '1px solid gray' },
-      logPassInputSt: { ...styles.logPassInputSt, border: '1px solid gray' },
-      alertDis: 'alertNoDis'
-    };
+      setStyles(prevStyles => ({
+        ...prevStyles,
+        logUserInputSt: { ...prevStyles.logUserInputSt, border: '1px solid gray' },
+        logPassInputSt: { ...prevStyles.logPassInputSt, border: '1px solid gray' },
+        alertDis: 'alertNoDis'
+      }));
 
-    const updLL = {
-      ...langList,
-      [lang]: {
-        ...langList[lang],
-        errorsMsg: {
-          ...langList[lang].errorsMsg,
-          m1: undefined,
-          m2: undefined
+      setLangList(prevData => ({
+        ...prevData,
+        [lang]: {
+          ...prevData[lang],
+          errorsMsg: {
+            ...prevData[lang].errorsMsg,
+            m1: undefined,
+            m2: undefined
+          }
         }
-      }
-    };
+      }));
 
-    const updStates = {
-      ...states,
-      logBDisabled: false
-    };
-
-    setLangList(updLL);
-    setStyles(updSt);
-    setStates(updStates);
+      setStates(prevStates => ({
+        ...prevStates,
+        logBDisabled: false
+      }));
     
-    setTimeout(() => {
-      const updStyles = {
-        ...styles,
-        aleStyle: { ...styles.aleStyle, display: 'none' }
-      };
-      setStyles(updStyles);
-    }, 300);
+      setTimeout(() => {
+        setStyles(prevStyles => ({
+          ...prevStyles,
+          aleStyle: { ...prevStyles.aleStyle, display: 'none' }
+        }));
+      }, 300);
   } else {
-    const updSt = {
-      ...styles,
-      logUserInputSt: { ...styles.logUserInputSt, border: '1px solid gray' }
-    };
+    setStyles(prevStyles => ({
+      ...prevStyles,
+      logUserInputSt: { ...prevStyles.logUserInputSt, border: '1px solid gray' }
+    }));
 
-    const updLL = {
-        ...langList,
-        [lang]: { ...langList[lang], errorsMsg: {
-          ...langList[lang].errorsMsg,
-          m1: undefined}}
-    };
-
-    setLangList(updLL);
-    setStyles(updSt);
+    setLangList(prevData => ({
+      ...prevData,
+      [lang]: { ...prevData[lang], errorsMsg: {
+        ...prevData[lang].errorsMsg,
+        m1: undefined}}
+    }));￼
     
     if (langList[lang].errorsMsg.m2 === undefined) {
       const updStyles = {
@@ -249,11 +223,10 @@ const changeM = function(mode) {
       setStyles(updStyles);
       
       setTimeout(() => {
-        const updStyles = {
-          ...updSt,
-          aleStyle: { ...updSt.aleStyle, display: 'none' }
-        };
-        setStyles(updStyles);
+        setStyles(prevStyles => ({
+          ...prevStyles,
+          aleStyle: { ...prevStyles.aleStyle, display: 'none' }
+        }));
       }, 300);
     }
   }
@@ -269,17 +242,11 @@ const changeM = function(mode) {
     };
     setStates(updStates);
     
-    const updLL = {
-      ...langList, 
-      
-    }
-    
     if (passVal.length < 8) {
-      const updStates = {
-        ...states, 
-        logBDisabled: false
-      };
-      setStates(updStates);
+      setStates(...prevStates => ({
+        ...prevStates,
+        logBDisabled: true
+      }));
       
       const updSt = {
         ...styles,
@@ -299,40 +266,40 @@ const changeM = function(mode) {
       setStyles(updSt);
     } else if (passVal.length > 7 && username.length > 3) {
       const updSt = {
-      ...styles,
-      logUserInputSt: { ...styles.logUserInputSt, border: '1px solid gray' },
-      logPassInputSt: { ...styles.logPassInputSt, border: '1px solid gray' },
-      alertDis: 'alertNoDis'
-    };
-
-    const updLL = {
-      ...langList,
-      [lang]: {
-        ...langList[lang],
-        errorsMsg: {
-          ...langList[lang].errorsMsg,
-          m1: undefined,
-          m2: undefined
-        }
-      }
-    };
-
-    const updStates = {
-      ...states,
-      logBDisabled: false
-    };
-
-    setLangList(updLL);
-    setStyles(updSt);
-    setStates(updStates);
-    
-    setTimeout(() => {
-      const updStyles = {
         ...styles,
-        aleStyle: { ...styles.aleStyle, display: 'none' }
+        logUserInputSt: { ...styles.logUserInputSt, border: '1px solid gray' },
+        logPassInputSt: { ...styles.logPassInputSt, border: '1px solid gray' },
+        alertDis: 'alertNoDis'
       };
-      setStyles(updStyles);
-    }, 300);
+
+      const updLL = {
+        ...langList,
+        [lang]: {
+          ...langList[lang],
+          errorsMsg: {
+            ...langList[lang].errorsMsg,
+            m1: undefined,
+            m2: undefined
+          }
+        }
+      };
+
+      const updStates = {
+        ...states,
+        logBDisabled: false
+      };
+
+      setLangList(updLL);
+      setStyles(updSt);
+      setStates(updStates);
+    
+      setTimeout(() => {
+        const updStyles = {
+          ...styles,
+          aleStyle: { ...styles.aleStyle, display: 'none' }
+        };
+        setStyles(updStyles);
+      }, 300);
     } else {
       const updSt = {
         ...styles,
@@ -351,21 +318,21 @@ const changeM = function(mode) {
       setStyles(updSt);
       
       if (langList[lang].errorsMsg.m1 === undefined) {
-        const updSt = {
-          ...styles,
-          alertDis: 'alertNoDis'
-        };
+      const updStyles = {
+        ...updSt,
+        alertDis: 'alertNoDis'
+      };
     
-        setStyles(updSt);
+      setStyles(updStyles);
       
-        setTimeout(() => {
-          const updStyles = {
-            ...styles,
-            aleStyle: { ...styles.aleStyle, display: 'none' }
-          };
-          setStyles(updStyles);
-        y}, 300);
-      }
+      setTimeout(() => {
+        const updStyles = {
+          ...updSt,
+          aleStyle: { ...updSt.aleStyle, display: 'none' }
+        };
+        setStyles(updStyles);
+      }, 300);
+    }
     }
   };
   
@@ -517,10 +484,10 @@ const changeM = function(mode) {
           <Link to="/forgot" id='forgot_pass'>{langList[lang].q6}</Link>
         </div>
         <div class="d-flex align-items-center mb-4">
-  <hr class="flex-grow-1 border-top border-gray" />
-  <span class="px-2 text-gray">{langList[lang].q13}</span>
-  <hr class="flex-grow-1 border-top border-gray" />
-</div>
+          <hr class="flex-grow-1 border-top border-black" />
+          <span class="px-2 text-gray">{langList[lang].q13}</span>
+          <hr class="flex-grow-1 border-top border-black" />
+        </div>
         <Link to="/signup" className="sign-up">{langList[lang].q8}</Link>
       </div>
     </div>
