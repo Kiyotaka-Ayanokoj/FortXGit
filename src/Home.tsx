@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import { useNavigate } from 'react-router-dom';
+import '../styles/home.css';
 
 function Home() {
   const navigate = useNavigate();
@@ -21,43 +22,10 @@ function Home() {
       });*/
       
   }, []);
-  
-  const changeLang = function(lang) {
-    localStorage.setItem("lang", lang);
-    setLang(lang);
-    const notLang = lang === 'es' ? 'en': 'es';
-    let updatedLangList = { ...langList };
-
-    /*for (let i = 1; i <= 10; i++) {
-    const errorMsg = langList[notLang].errorsMsg[`m${i}`];
-    const updErrorMsg = langList[lang].errorsMsgT[`m${i}`];
-    if (errorMsg !== undefined && errorMsg !== '') {
-      updatedLangList = {
-        ...updatedLangList,
-        [lang]: {
-          ...updatedLangList[lang],
-          errorsMsg: {
-            ...updatedLangList[lang].errorsMsg,
-            [`m${i}`]: updErrorMsg
-          }
-        },
-        [notLang]: {
-          ...updatedLangList[notLang],
-          errorsMsg: {
-            ...updatedLangList[notLang].errorsMsg,
-            [`m${i}`]: ''
-          }
-        }
-      };
-    }
-  };*/
-
-      setLangList(updatedLangList);
-  };
 
   return (
     <>
-      <Navbar lang="es" changeLang={changeLang}/>
+      <Navbar lang="es"/>
       <h1>Hello</h1>
     </>
   )

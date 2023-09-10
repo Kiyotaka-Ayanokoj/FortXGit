@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { changeLang } from './actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLanguage } from '@fortawesome/free-solid-svg-icons';
-import './Navbar.css';
+import '../styles/navbar.css';
 import { Link } from 'react-router-dom';
 
 const Navbar = (props) => {

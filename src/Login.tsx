@@ -1,24 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './Login.css';
+import '../styles/login.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock, faCircleExclamation} from '@fortawesome/free-solid-svg-icons';
 import Navbar from './Navbar';
 import { useNavigate, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { changeLang } from './actions';
-
+import { changeLang, getCookie } from './actions';
 
 const Login = (props) => {
-  /*const userlan = navigator.language || navigator.userLanguage;
-  const userlang = userlan.slice(0, 2);*/
-  const { lang, changeLang, projectName } = props;
+  const { lang, projectName, changeLang, getCookie} = props;
   
   const [states, setStates] = useState({
     onLoading: false,
-    logBDisabled: true,
+    logBEnabled: false,
     logUAlrWr: false,
     logPAlrWr: false
   });
+  
+  console.log(getCookie('s'))
     
     useEffect(() => {
       if (localStorage.getItem('alrLog') === null) {
@@ -61,7 +60,6 @@ const Login = (props) => {
       onRegButton: {
         color: 'white'
       },
-      loadingIcon: 'none',
       loadingStyle: {
         display: 'none'
       },
@@ -77,17 +75,17 @@ const Login = (props) => {
         display: "none"
       },
       navMenu: {},
-    styleFormT: 'onLog',
-    logUserInputSt: {
-      border: '1px solid gray'
-    },
-    logPassInputSt: {
-      border: '1px solid gray'
-    },
-    div1: {
-      animation: ''
-    },
-    alertDis: ''
+      styleFormT: 'onLog',
+      logUserInputSt: {
+        border: '1px solid gray'
+      },
+      logPassInputSt: {
+        border: '1px solid gray'
+      },
+      div1: {
+        animation: ''
+      },
+      alertDis: ''
     });
   const [langList, setLangList] = useState({
     "es": {
@@ -138,26 +136,26 @@ const password = passwor.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ0-9]/g, ''
   const [showResponse, setShowResponse] = useState();
   
   const handleUsernameChange = (event) => {
-  const userVal = event.target.value;
-  setStates(prevStates => ({
-    ...prevStates,
-    logUAlrWr: true
-  }));
+    const userVal = event.target.value;
+    setStates(prevStates => ({
+      ...prevStates,
+      logUAlrWr: true
+    }));
+    
+    setLangList(prevData => ({
+      ...prevData,
+      [lang]: {
+        ...prevData[lang],
+        errorsMsg: {
+          ...prevData[lang].errorsMsg,
+            m3: undefined
+        }
+      }
+    }));
 
   setUsername(event.target.value);
 
   if (userVal.length < 4) {
-    setStates(prevStates => ({
-      ...prevStates,
-      logBDisabled: true
-    }));
-
-    setStyles(prevStyles => ({
-      ...prevStyles,
-      logUserInputSt: { ...prevStyles.logUserInputSt, border: '1px solid red' },
-      alertDis: 'alertDis',
-      aleStyle: {...prevStyles.aleStyle, display: 'flex'}
-    }));
 
     setLangList(prevData => ({
       ...prevData,
@@ -169,13 +167,89 @@ const password = passwor.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ0-9]/g, ''
         }
       }
     }));
+    
+    setStyles(prevStyles => ({
+      ...prevStyles,
+      logUserInputSt: { ...prevStyles.logUserInputSt, border: '1px solid red' }
+    }));
 
   } else if (userVal.length > 3 && password.length > 7) {
       setStyles(prevStyles => ({
         ...prevStyles,
         logUserInputSt: { ...prevStyles.logUserInputSt, border: '1px solid gray' },
-        logPassInputSt: { ...prevStyles.logPassInputSt, border: '1px solid gray' },
-        alertDis: 'alertNoDis'
+        logPassInputSt: { ...prevStyles.logPassInputSt, border: '1px solid gray' }
+      }));
+
+      setLangList(prevData => ({
+        ...prevData,
+        [lang]: {
+          ...prevData[lang],
+          errorsMsg: {
+            ...prevData[lang].errorsMsg,
+            m1: undefined,
+            m2: undefined,
+            m3: undefined
+          }
+        }
+      }));
+  } else {
+    setStyles(prevStyles => ({
+      ...prevStyles,
+      logUserInputSt: { ...prevStyles.logUserInputSt, border: '1px solid gray' }
+    }));
+
+    setLangList(prevData => ({
+      ...prevData,
+      [lang]: {
+        ...prevData[lang],
+        errorsMsg: {
+          ...prevData[lang].errorsMsg,
+          m1: undefined
+        }
+      }
+    }));
+  }
+};
+
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+    const passVal = event.target.value;
+    setStates(prevStates => ({
+      ...prevStates, 
+      logPAlrWr: true
+    }));
+    
+    setLangList(prevData => ({
+      ...prevData,
+      [lang]: {
+        ...prevData[lang],
+        errorsMsg: {
+          ...prevData[lang].errorsMsg,
+            m3: undefined
+        }
+      }
+    }));
+    
+    if (passVal.length < 8) {
+      
+      setStyles(prevStyles => ({
+        ...prevStyles,
+        logPassInputSt: {...prevStyles.logPassInputSt, border: '1px solid red'}
+      }));
+      
+      setLangList(prevData => ({
+        ...prevData,
+        [lang]: { ...prevData[lang], errorsMsg: {
+          ...prevData[lang].errorsMsg,
+          m2: prevData[lang].errorsMsgT.m2}}
+      }));
+      
+    } else if (passVal.length > 7 && username.length > 3) {
+      setStyles(prevStyles => ({
+        ...prevStyles,
+        logUserInputSt: { ...prevStyles.logUserInputSt, border: '1px solid gray' },
+        logPassInputSt: { ...prevStyles.logPassInputSt, border: '1px solid gray' }
       }));
 
       setLangList(prevData => ({
@@ -189,161 +263,67 @@ const password = passwor.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ0-9]/g, ''
           }
         }
       }));
-
-      setStates(prevStates => ({
-        ...prevStates,
-        logBDisabled: false
-      }));
-    
-      setTimeout(() => {
-        setStyles(prevStyles => ({
-          ...prevStyles,
-          aleStyle: { ...prevStyles.aleStyle, display: 'none' }
-        }));
-      }, 300);
-  } else {
-    setStyles(prevStyles => ({
-      ...prevStyles,
-      logUserInputSt: { ...prevStyles.logUserInputSt, border: '1px solid gray' }
-    }));
-
-    setLangList(prevData => ({
-      ...prevData,
-      [lang]: { ...prevData[lang], errorsMsg: {
-        ...prevData[lang].errorsMsg,
-        m1: undefined}}
-    }));￼
-    
-    if (langList[lang].errorsMsg.m2 === undefined) {
-      const updStyles = {
-        ...updSt,
-        alertDis: 'alertNoDis'
-      };
-    
-      setStyles(updStyles);
       
-      setTimeout(() => {
-        setStyles(prevStyles => ({
-          ...prevStyles,
-          aleStyle: { ...prevStyles.aleStyle, display: 'none' }
-        }));
-      }, 300);
-    }
-  }
-};
-
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-    const passVal = event.target.value;
-    const updStates = {
-      ...states, 
-      logPAlrWr: true
-    };
-    setStates(updStates);
-    
-    if (passVal.length < 8) {
-      setStates(...prevStates => ({
-        ...prevStates,
-        logBDisabled: true
-      }));
-      
-      const updSt = {
-        ...styles,
-        logPassInputSt: {...styles.logPassInputSt, border: '1px solid red'},
-        alertDis: 'alertDis',
-        aleStyle: {...styles.aleStyle, display: 'flex'}
-      };
-      
-      const updLL = {
-        ...langList,
-        [lang]: { ...langList[lang], errorsMsg: {
-          ...langList[lang].errorsMsg,
-          m2: langList[lang].errorsMsgT.m2}}
-      };
-
-      setLangList(updLL);
-      setStyles(updSt);
-    } else if (passVal.length > 7 && username.length > 3) {
-      const updSt = {
-        ...styles,
-        logUserInputSt: { ...styles.logUserInputSt, border: '1px solid gray' },
-        logPassInputSt: { ...styles.logPassInputSt, border: '1px solid gray' },
-        alertDis: 'alertNoDis'
-      };
-
-      const updLL = {
-        ...langList,
-        [lang]: {
-          ...langList[lang],
-          errorsMsg: {
-            ...langList[lang].errorsMsg,
-            m1: undefined,
-            m2: undefined
-          }
-        }
-      };
-
-      const updStates = {
-        ...states,
-        logBDisabled: false
-      };
-
-      setLangList(updLL);
-      setStyles(updSt);
-      setStates(updStates);
-    
-      setTimeout(() => {
-        const updStyles = {
-          ...styles,
-          aleStyle: { ...styles.aleStyle, display: 'none' }
-        };
-        setStyles(updStyles);
-      }, 300);
     } else {
-      const updSt = {
-        ...styles,
-        logPassInputSt: {...styles.logPassInputSt, border: '1px solid gray'},
-        alertDis: 'alertNoDis'
-      };
+      setStyles(prevStyles => ({
+        ...prevStyles,
+        logPassInputSt: {...prevStyles.logPassInputSt, border: '1px solid gray'}
+      }));
       
-      const updLL = {
-        ...langList,
-        [lang]: { ...langList[lang], errorsMsg: {
-          ...langList[lang].errorsMsg,
+      setLangList(prevData => ({
+        ...prevData,
+        [lang]: { ...prevData[lang], errorsMsg: {
+          ...prevData[lang].errorsMsg,
           m2: undefined}}
-      };
-
-      setLangList(updLL);
-      setStyles(updSt);
+      }));
       
-      if (langList[lang].errorsMsg.m1 === undefined) {
-      const updStyles = {
-        ...updSt,
-        alertDis: 'alertNoDis'
-      };
-    
-      setStyles(updStyles);
-      
-      setTimeout(() => {
-        const updStyles = {
-          ...updSt,
-          aleStyle: { ...updSt.aleStyle, display: 'none' }
-        };
-        setStyles(updStyles);
-      }, 300);
-    }
     }
   };
   
   const checkAlertMsg = () => {
     for (let i = 1; i <= 10; i++) {
       if (langList[lang].errorsMsg[`m${i}`] !== undefined) {
+        
         return langList[lang].errorsMsg[`m${i}`];
       }
     }
+    
     return '';
   };
+  
+  useEffect(() => {
+    if (checkAlertMsg() !== '') {
+      setStyles(prevStyles => ({
+        ...prevStyles,
+        alertDis: 'alertDis',
+        aleStyle: {...prevStyles.aleStyle, display: 'flex'}
+      }));
+      
+      setStates(prevStates => ({
+        ...prevStates,
+        logBEnabled: false
+      }));
+    } else {
+      setStyles(prevStyles => ({
+        ...prevStyles,
+        alertDis: 'alertNoDis'
+      }));
+      
+      setTimeout(() => {
+        setStyles(prevStyles => ({
+          ...prevStyles,
+          aleStyle: {...prevStyles.aleStyle, display: 'none'}
+        }));
+      }, 300);
+      
+      if (username.length >= 4 && password.length >= 8) {
+        setStates(prevStates => ({
+          ...prevStates,
+          logBEnabled: true
+        }));
+      }
+    }
+  }, [checkAlertMsg()])
   
   useEffect(() => {
     /*localStorage.setItem("lang", lang);*/
@@ -397,7 +377,7 @@ const password = passwor.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ0-9]/g, ''
     const st = {
       ...states,
       onLoading: true,
-      logBDisabled: true
+      logBEnabled: true
     };
     setStates(st);
     
@@ -405,10 +385,10 @@ const password = passwor.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ0-9]/g, ''
       setStates(prevStates => ({
         ...prevStates,
         onLoading: false,
-        logBDisabled: false
+        logBEnabled: false
       }));
       
-      /*if (data.code === 1) {
+      if (data.code === 1) {
         localStorage.setItem('userToken', userToken);
         navigate('/');
       } else {
@@ -419,7 +399,7 @@ const password = passwor.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ0-9]/g, ''
             m3: data.msg
           }}
         }));
-      }*/
+      }
     }
 
     const url = "https://kiyotakaA.pythonanywhere.com/api/processLog";
@@ -477,7 +457,7 @@ const password = passwor.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ0-9]/g, ''
         <span>{checkAlertMsg()}</span>
         </div>
 
-        <button disabled={states.logBDisabled ? true : false} id='log_send_form' onClick={sendForm}>
+        <button disabled={states.logBEnabled ? false : true} id='log_send_form' onClick={sendForm}>
           {states.onLoading ? (<span><span className="spinner-grow spinner-grow-sm mx-2"></span>{langList[lang].q12}</span>) : (<span style={styles.bSpanStyle}>{langList[lang].q7}</span>)}
         </button>
         <div className="fpcontainer">
@@ -500,4 +480,6 @@ const mapStateToProps = (state) => ({
   projectName: state.projectName,
 });
 
-export default connect(mapStateToProps, { changeLang })(Login);
+
+
+export default connect(mapStateToProps, { changeLang, getCookie})(Login);

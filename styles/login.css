@@ -49,10 +49,10 @@ body {
   background: transparent;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  caret-color: white;
-  -webkit-caret-color: lightblue;
-  -moz-caret-color: lightblue;
-  -mz-caret-color: lightblue;
+  caret-color: black;
+  -webkit-caret-color: black;
+  -moz-caret-color: black;
+  -mz-caret-color: black;
   border: 1px solid darkgray;
 }
 
