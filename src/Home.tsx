@@ -21,6 +21,8 @@ function Home() {
         console.log(err);
       });*/
       
+    document.title = 'Home';
+      
   }, []);
 
   return (

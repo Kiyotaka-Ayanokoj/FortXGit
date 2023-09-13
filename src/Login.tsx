@@ -5,10 +5,11 @@ import { faUser, faLock, faCircleExclamation} from '@fortawesome/free-solid-svg-
 import Navbar from './Navbar';
 import { useNavigate, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { changeLang, getCookie } from './actions';
+import { changeLang } from './actions';
+import { setCookie, getCookie, delCookie} from './cookieUtils';
 
 const Login = (props) => {
-  const { lang, projectName, changeLang, getCookie} = props;
+  const { lang, projectName, changeLang} = props;
   
   const [states, setStates] = useState({
     onLoading: false,
@@ -16,8 +17,6 @@ const Login = (props) => {
     logUAlrWr: false,
     logPAlrWr: false
   });
-  
-  console.log(getCookie('s'))
     
     useEffect(() => {
       if (localStorage.getItem('alrLog') === null) {
@@ -481,5 +480,4 @@ const mapStateToProps = (state) => ({
 });
 
 
-
-export default connect(mapStateToProps, { changeLang, getCookie})(Login);
+export default connect(mapStateToProps, { changeLang })(Login);
