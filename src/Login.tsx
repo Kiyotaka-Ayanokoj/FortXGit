@@ -9,7 +9,13 @@ import { changeLang } from './actions';
 import { setCookie, getCookie, delCookie} from './cookieUtils';
 
 const Login = (props) => {
-  const { lang, projectName, changeLang} = props;
+  const navigate = useNavigate();
+  
+  if (getCookie('userToken') !== null) {
+    navigate('/');
+  };
+  
+  const { lang, projectName, changeLang } = props;
   
   const [states, setStates] = useState({
     onLoading: false,
@@ -356,8 +362,6 @@ const password = passwor.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ0-9]/g, ''
   setLangList(updatedLangList);
   }, [lang]);
 
-  const navigate = useNavigate();
-
   const sendForm = () => {
     const genUserToken = () => {
       const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -388,7 +392,7 @@ const password = passwor.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ0-9]/g, ''
       }));
       
       if (data.code === 1) {
-        localStorage.setItem('userToken', userToken);
+        setCookie('userToken', userToken);
         navigate('/');
       } else {
         setLangList(prevStates => ({
