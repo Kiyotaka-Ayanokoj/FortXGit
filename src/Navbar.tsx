@@ -8,7 +8,12 @@ import { Link } from 'react-router-dom';
 
 const Navbar = (props) => {
   const { lang, changeLang, projectName } = props;
-
+  
+  const handleChangeLang = (newLang) => {
+    changeLang(newLang);
+    localStorage.setItem('lang', newLang);
+  };
+  
   const [states, setStates] = useState({
     navListState: '',
     langMenuState: 'langMenuClosed',
@@ -54,24 +59,19 @@ const Navbar = (props) => {
       setStates({ ...states, navListState: 'navListOpen' });
     }
     
-    setStates((prevStates) => ({
+    setStates(prevStates => ({
       ...prevStates,
       navState: !prevStates.navState
     }));
   };
 
   const openLangMenu = () => {
-    if (states.langMenuState === 'langMenuOpen') {
-      setStates({ ...states, langMenuState: 'langMenuClosed' });
-    } else {
-      setStates({ ...states, langMenuState: 'langMenuOpen' });
-    }
+    setStates((prevState) => ({
+      ...prevState,
+      langMenuState: prevState.langMenuState === 'langMenuOpen' ? 'langMenuClosed' : 'langMenuOpen',
+    }));
   };
 
-  const handleChangeLang = (newLang) => {
-    changeLang(newLang);
-    localStorage.setItem('lang', newLang);
-  };
 
   
   return (
@@ -94,7 +94,7 @@ const Navbar = (props) => {
           <Link to="/contact" className="Link btn">{langList[lang].navList.contact}</Link>
           <Link to="/login" className="Link btn lb lb1">{langList[lang].navList.login}</Link>
           <Link to="/signup" className="Link btn lb lb2">{langList[lang].navList.signup}</Link>
-          {/*<div className="changeLang">
+          <div className="changeLang">
             <button type="button" className="language btn" onClick={openLangMenu}>
             {langList[lang].navList.navLang}
             </button>
@@ -102,7 +102,7 @@ const Navbar = (props) => {
             <button onClick={() => handleChangeLang("es")}>Español</button>
             <button onClick={() => handleChangeLang("en")}>English</button>
           </div>
-          </div>*/}
+          </div>
       </div>
     </>
   );

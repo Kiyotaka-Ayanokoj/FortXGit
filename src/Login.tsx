@@ -21,7 +21,8 @@ const Login = (props) => {
     onLoading: false,
     logBEnabled: false,
     logUAlrWr: false,
-    logPAlrWr: false
+    logPAlrWr: false,
+    remData: false
   });
     
     useEffect(() => {
@@ -303,11 +304,6 @@ const password = passwor.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ0-9]/g, ''
         alertDis: 'alertDis',
         aleStyle: {...prevStyles.aleStyle, display: 'flex'}
       }));
-      
-      setStates(prevStates => ({
-        ...prevStates,
-        logBEnabled: false
-      }));
     } else {
       setStyles(prevStyles => ({
         ...prevStyles,
@@ -320,14 +316,7 @@ const password = passwor.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ0-9]/g, ''
           aleStyle: {...prevStyles.aleStyle, display: 'none'}
         }));
       }, 300);
-      
-      if (username.length >= 4 && password.length >= 8) {
-        setStates(prevStates => ({
-          ...prevStates,
-          logBEnabled: true
-        }));
       }
-    }
   }, [checkAlertMsg()])
   
   useEffect(() => {
@@ -393,6 +382,15 @@ const password = passwor.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ0-9]/g, ''
       
       if (data.code === 1) {
         setCookie('userToken', userToken);
+        setCookie('username', username);
+        
+        if (states.remData) {
+          setCookie('remUsername', username);
+          setCookie('remPassword', password);
+        } else {
+          delCookie('remUsername');
+          delCookie('remPassword');
+        };
         navigate('/');
       } else {
         setLangList(prevStates => ({
@@ -431,6 +429,33 @@ const password = passwor.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ0-9]/g, ''
     }
   };
   
+  const remData = () => {
+    setStates(prevStates => ({
+      ...prevStates, 
+      remData: !prevStates.remData
+    }));
+  };
+  
+  useEffect(() => {
+    const remUsername = getCookie('remUsername');
+    const remPassword = getCookie('remPassword');
+    
+    if (remUsername !== null) {
+      setUsername(remUsername);
+    }
+    
+    if (remPassword !== null) {
+      setPassword(remPassword);
+    }
+    
+    if (username.length >= 4 && password.length >= 8) {
+      setStates(prevStates => ({
+        ...prevStates,
+        logBEnabled: true
+      }));
+    }
+  }, [username, password]);
+  
   return (
   <>
     <Navbar onLoading={states.onLoading}/>
@@ -446,7 +471,7 @@ const password = passwor.replace(/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ0-9]/g, ''
           <FontAwesomeIcon icon={faLock} className="faLock"/>
         </div>
         <div className="remData">
-  <input type="checkbox" id="cbx2" style={{ display: 'none' }} />
+  <input type="checkbox" id="cbx2" onChange={remData} style={{ display: 'none' }} />
   <label htmlFor="cbx2" className="check"> 
     <svg width="18px" height="18px" viewBox="0 0 18 18">
       <path d="M 1 9 L 1 9 c 0 -5 3 -8 8 -8 L 9 1 C 14 1 17 5 17 9 L 17 9 c 0 4 -4 8 -8 8 L 9 17 C 5 17 1 14 1 9 L 1 9 Z"></path>
